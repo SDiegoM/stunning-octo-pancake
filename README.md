@@ -1,3 +1,1 @@
-"# stunning-octo-pancake" 
-"# stunning-octo-pancake" 
-"# stunning-octo-pancake" 
+Example of a couple of R scripts I have written 
