@@ -1,0 +1,9 @@
+"0","arana <- read.csv('D:Code Examples/data/datospi3.csv',header = T, sep = ',',dec = ',')
+"
+"2","Warning in file(file, ""rt"") :"
+"2","
+ "
+"2"," no fue posible abrir el archivo 'D:Code Examples/data/datospi3.csv': No such file or directory
+"
+"2","Error in file(file, ""rt"") : no se puede abrir la conexión
+"

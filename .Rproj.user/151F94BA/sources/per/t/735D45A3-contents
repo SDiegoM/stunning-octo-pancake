@@ -1,0 +1,124 @@
+---
+title: "Proyecto independiente"
+author: "Diego Salas Murillo"
+date: "2024-05-02"
+output: html_document
+---
+
+#Paquetes
+```{r}
+library(ggplot2)
+library(emmeans)
+```
+
+#Datos
+```{r}
+arana <- read.csv('D:/Code Examples/data/datospi3.csv',header = T, sep = ',',dec = ',')
+mutu <- read.csv('D:/Code Examples/data/mutualista.csv',header = T, sep = ',',dec = ',')
+para <- read.csv('D:/Code Examples/data/Parasita.csv',header = T, sep = ',',dec = ',')
+```
+
+#Mutualistas
+```{r}
+grafmutorb <- ggplot(mutu,aes(x=Hormiga,y=Orbicular,fill=Hormiga))+
+    geom_boxplot()+
+    theme_classic(base_size = 18)+
+    labs(x = "Hormigas en acacia", y = "Numero de redes orbiculares") +
+    scale_fill_manual(values=c("#68a24b", "#e54037"))+
+    theme(plot.background = element_rect(color = "black", linewidth = 2),legend.position = "none")+
+    scale_x_discrete(labels=c("P. flavicornis", "P. spinicola"))
+
+grafmutorb
+
+grafmutref <- ggplot(mutu,aes(x=Hormiga,y=Refugio,fill=Hormiga))+
+    geom_boxplot()+
+    theme_classic(base_size = 18)+
+    labs(x = "Hormigas en acacia", y = "Numero de telas de refugio") +
+    scale_fill_manual(values=c("#68a24b", "#e54037"))+
+    theme(plot.background = element_rect(color = "black", linewidth = 2),legend.position = "none")+
+    scale_x_discrete(labels=c("P. flavicornis", "P. spinicola"))
+
+grafmutref
+```
+
+#Parasitas
+```{r}
+grafparorb <- ggplot(para,aes(x=Hormiga,y=Orbicular,fill=Hormiga))+
+    geom_boxplot()+
+    theme_classic(base_size = 18)+
+    labs(x = "Hormigas en acacia", y = "Numero de redes orbiculares") +
+    scale_fill_manual(values=c("#5a5ae2", "#ed872d"))+
+    theme(plot.background = element_rect(color = "black", linewidth = 2),legend.position = "none")+
+    scale_x_discrete(labels=c("Crematogaster sp.", "P. gracilis"))
+
+grafparorb
+
+grafparef <- ggplot(para,aes(x=Hormiga,y=Refugio,fill=Hormiga))+
+    geom_boxplot()+
+    theme_classic(base_size = 18)+
+    labs(x = "Hormigas en acacia", y = "Numero de telas de refugio") +
+    scale_fill_manual(values=c("#5a5ae2", "#ed872d"))+
+    theme(plot.background = element_rect(color = "black", linewidth = 2),legend.position = "none")+
+    scale_x_discrete(labels=c("Crematogaster sp.", "P. gracilis"))
+
+grafparef
+```
+#Graficos finales
+```{r}
+graf2 <- ggplot(arana,aes(x=Condicion,y=Orbicular,fill=Condicion))+
+    geom_boxplot()+
+    theme_classic(base_size = 18)+
+    labs(x = "Hormigas en acacia", y = "Numero de redes orbiculares") +
+    scale_fill_manual(values=c("#ba55d3", "#68a24b", "#ed872d"))+
+    theme(plot.background = element_rect(color = "black", linewidth = 2),legend.position = "none")
+
+graf2
+
+graf3 <- ggplot(arana,aes(x=Condicion,y=Refugio,fill=Condicion))+
+    geom_boxplot()+
+    theme_classic(base_size = 18)+
+    labs(x = "Hormigas en acacia", y = "Numero de redes de refugio") +
+    scale_fill_manual(values=c("#ba55d3", "#68a24b", "#ed872d"))+
+    theme(plot.background = element_rect(color = "black", linewidth = 2),legend.position = "none")
+
+graf3
+```
+#Analisis
+```{r}
+modorb <- glm(formula = Orbicular ~ Condicion, data = arana, family = poisson())
+summary(modorb)#No hay diferencia
+
+mod.emm.orb <- emmeans(modorb,'Condicion')
+pairs(mod.emm.orb)
+
+modref <- glm(formula = Refugio ~ Condicion, data = arana, family = poisson())
+summary(modref)#Diferencias entre Austen y parasita, demas sin diferencias
+
+mod.emm.ref <- emmeans(modref,'Condicion')
+pairs(mod.emm.ref)
+
+
+
+spinicola <- mutu[mutu$Hormiga=='Spinicola',]
+spinicola
+flavi <- mutu[mutu$Hormiga=='Flavicornis',]
+flavi
+
+t.test(x = spinicola$Total,y = flavi$Total)
+
+t.test(x = spinicola$Orbicular,y = flavi$Orbicular)
+
+t.test(x = spinicola$Refugio,y = flavi$Refugio)
+
+crema <- para[para$Hormiga=='Crematogaster',]
+crema
+graci <- para[para$Hormiga=='Gracili',]
+graci
+
+t.test(x = crema$Total,y = graci$Total)
+
+t.test(x = crema$Orbicular,y = graci$Orbicular)
+
+t.test(x = crema$Refugio,y = graci$Refugio)
+```
+
